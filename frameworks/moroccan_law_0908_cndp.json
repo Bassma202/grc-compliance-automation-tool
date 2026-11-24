@@ -1,0 +1,37 @@
+{
+  "framework": "Loi Marocaine 09-08 & CNDP",
+  "authority": "Commission Nationale de contrôle de la protection des Données à caractère Personnel (CNDP)",
+  "jurisdiction": "Morocco",
+  "articles": [
+    {
+      "id": "ART-03",
+      "topic": "Consent & Lawfulness of Processing",
+      "description": "Processing of personal data is lawful only if the data subject has unambiguously given consent or processing is necessary for compliance with a legal obligation.",
+      "criticality": "HIGH"
+    },
+    {
+      "id": "ART-12",
+      "topic": "Sensitive Data & Health Records",
+      "description": "Prohibition of processing personal data revealing genetic, health, or medical conditions unless explicitly authorized by CNDP or under strict medical secrecy.",
+      "criticality": "CRITICAL"
+    },
+    {
+      "id": "ART-23",
+      "topic": "Confidentiality & Technical Security Safeguards",
+      "description": "The data controller must implement appropriate technical and organizational measures to protect personal data against accidental or unlawful destruction, loss, alteration, unauthorized disclosure, or access.",
+      "criticality": "CRITICAL"
+    },
+    {
+      "id": "ART-24",
+      "topic": "Audit Trails & Access Logging",
+      "description": "Obligation to log user access, modifications, and transmissions of sensitive personal records with tamper-proof audit trails.",
+      "criticality": "HIGH"
+    },
+    {
+      "id": "ART-43",
+      "topic": "Cross-Border Data Transfer Restrictions",
+      "description": "Transfer of personal data to a foreign state is prohibited without prior authorization from CNDP, requiring adequate equivalent protection in the destination state.",
+      "criticality": "HIGH"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "framework": "ISO/IEC 27001:2022",
+  "version": "2022",
+  "description": "Information security, cybersecurity and privacy protection — Information security management systems",
+  "categories": [
+    {
+      "id": "A.5",
+      "name": "Organizational Controls",
+      "controls": [
+        {
+          "id": "A.5.1",
+          "title": "Policies for information security",
+          "description": "Information security policy and topic-specific policies defined, approved, published and reviewed.",
+          "weight": 5
+        },
+        {
+          "id": "A.5.15",
+          "title": "Access control",
+          "description": "Rules to control physical and logical access to information and other associated assets.",
+          "weight": 5
+        },
+        {
+          "id": "A.5.24",
+          "title": "Information security incident management planning",
+          "description": "Plan and prepare for managing information security incidents by defining processes and roles.",
+          "weight": 4
+        }
+      ]
+    },
+    {
+      "id": "A.8",
+      "name": "Technological Controls",
+      "controls": [
+        {
+          "id": "A.8.1",
+          "title": "User endpoint devices",
+          "description": "Information stored on, processed by or accessible via user endpoint devices protected.",
+          "weight": 4
+        },
+        {
+          "id": "A.8.7",
+          "title": "Protection against malware",
+          "description": "Protection against malware implemented and supported by appropriate user awareness.",
+          "weight": 4
+        },
+        {
+          "id": "A.8.9",
+          "title": "Configuration management",
+          "description": "Configurations, including security configurations, of hardware, software, services and networks established, documented, implemented, monitored and reviewed.",
+          "weight": 4
+        },
+        {
+          "id": "A.8.12",
+          "title": "Data leakage prevention",
+          "description": "Data leakage prevention measures applied to systems, networks and any other devices that process, store or transmit sensitive information.",
+          "weight": 5
+        },
+        {
+          "id": "A.8.15",
+          "title": "Logging",
+          "description": "Logs that record activities, exceptions, faults and other relevant events produced, stored, protected and analyzed.",
+          "weight": 5
+        },
+        {
+          "id": "A.8.20",
+          "title": "Network security",
+          "description": "Networks and network devices secured, managed and controlled to protect information in systems and applications.",
+          "weight": 4
+        },
+        {
+          "id": "A.8.24",
+          "title": "Use of cryptography",
+          "description": "Rules for the effective use of cryptography, including cryptographic key management, defined and implemented.",
+          "weight": 4
+        }
+      ]
+    }
+  ]
+}
