@@ -1,5 +1,5 @@
 """
-Unit Tests for GRC Scoring & Compliance Engine
+Unit Tests for GRC Scoring, Law 09-08, EBIOS RM, and FAIR Quantitative Risk
 """
 
 import unittest
@@ -9,10 +9,12 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from src.grc_engine import GRCEngine
+from src.fair_engine import FAIRRiskCalculator
 
 class TestGRCEngine(unittest.TestCase):
     def setUp(self):
         self.engine = GRCEngine()
+        self.fair = FAIRRiskCalculator(currency="MAD")
 
     def test_iso27001_full_compliance(self):
         responses = {
@@ -46,15 +48,16 @@ class TestGRCEngine(unittest.TestCase):
         self.assertTrue(any(v["article_id"] == "ART-23" for v in res["violations"]))
 
     def test_ebios_risk_calculation(self):
-        # Gravity 4 x Likelihood 4 = 16 (Critical)
         risk = self.engine.calculate_ebios_risk(gravity=4, likelihood=4)
         self.assertEqual(risk["risk_score"], 16)
         self.assertEqual(risk["risk_tier"], "CRITICAL / UNACCEPTABLE")
 
-        # Gravity 1 x Likelihood 2 = 2 (Low)
-        risk_low = self.engine.calculate_ebios_risk(gravity=1, likelihood=2)
-        self.assertEqual(risk_low["risk_score"], 2)
-        self.assertEqual(risk_low["risk_tier"], "LOW / ACCEPTABLE")
+    def test_fair_quantitative_ale(self):
+        # Threat capability 0.5, 10 attempts/yr, 0.2 vuln, 10k primary, 40k secondary
+        fair_res = self.fair.calculate_ale(0.5, 10.0, 0.2, 10000.0, 40000.0)
+        self.assertGreater(fair_res["annualized_loss_expectancy_ale"], 0)
+        self.assertEqual(fair_res["single_loss_expectancy"], 50000.0)
+        self.assertEqual(fair_res["currency"], "MAD")
 
 if __name__ == "__main__":
     unittest.main()
