@@ -1,0 +1,274 @@
+{
+  "generated_at": "2026-11-26T01:40:41.783347+00:00",
+  "evidence_classification": "Simulated business data (explicitly fictional case studies)",
+  "case_studies": {
+    "maison-valmont": {
+      "soa": {
+        "org_id": "maison-valmont",
+        "total_controls_tracked": 93,
+        "applicable_controls": 92,
+        "non_applicable_controls": 1,
+        "assessed_controls": 19,
+        "status_counts": {
+          "IMPLEMENTED": 9,
+          "PARTIAL": 6,
+          "NOT_IMPLEMENTED": 4,
+          "NOT_ASSESSED": 73,
+          "INSUFFICIENT_EVIDENCE": 0,
+          "ACCEPTED_EXCEPTION": 0
+        },
+        "implementation_index_pct": 13.0,
+        "disclaimer": "Self-assessment index based on recorded evidence; does not represent formal certification or legal compliance."
+      },
+      "ebios": {
+        "study_id": "EBIOS-VALMONT-2026",
+        "business_values_count": 2,
+        "retained_risk_sources": 2,
+        "ecosystem_stakeholders": 2,
+        "highest_threat_stakeholder": "External Embroidery Atelier",
+        "highest_stakeholder_threat_level": 4.5,
+        "strategic_scenarios": 1,
+        "operational_scenarios": 1,
+        "high_risk_initial_count": 1,
+        "high_risk_residual_count": 0,
+        "treatments_defined": 1
+      },
+      "fair": {
+        "scenario_name": "Pre-show unreleased couture archive & VIP CRM exfiltration via compromised atelier vendor",
+        "currency": "EUR",
+        "iterations": 10000,
+        "seed": 4101,
+        "expected_lef": 1.1158,
+        "expected_sle": 272327.14,
+        "expected_ale": 303468.79,
+        "p50_ale": 221224.13,
+        "p90_ale": 650536.74,
+        "p95_ale": 805852.76,
+        "p99_ale": 1166597.27,
+        "ci90_low": 59339.78,
+        "ci90_high": 805852.76,
+        "residual_expected_ale": 106214.08,
+        "residual_p95_ale": 282048.47,
+        "risk_reduction_amount": 197254.72,
+        "risk_reduction_pct": 65.0,
+        "annual_control_cost": 65000.0,
+        "net_risk_benefit": 132254.72,
+        "expected_ale_alternate_currency": 3292636.42,
+        "alternate_currency": "MAD",
+        "fx_metadata": {
+          "eur_to_mad": 10.85,
+          "date": "2026-11-26",
+          "source": "Reference demonstration rate (update from Bank Al-Maghrib / ECB for live budgeting)"
+        },
+        "sensitivity_spearman": {
+          "threat_event_frequency": 0.4389,
+          "vulnerability": 0.2798,
+          "primary_loss_magnitude": 0.322,
+          "secondary_loss_magnitude": 0.6899
+        },
+        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+      }
+    },
+    "atlaspath-lab": {
+      "soa": {
+        "org_id": "atlaspath-lab",
+        "total_controls_tracked": 93,
+        "applicable_controls": 92,
+        "non_applicable_controls": 1,
+        "assessed_controls": 16,
+        "status_counts": {
+          "IMPLEMENTED": 8,
+          "PARTIAL": 5,
+          "NOT_IMPLEMENTED": 3,
+          "NOT_ASSESSED": 76,
+          "INSUFFICIENT_EVIDENCE": 0,
+          "ACCEPTED_EXCEPTION": 0
+        },
+        "implementation_index_pct": 11.4,
+        "disclaimer": "Self-assessment index based on recorded evidence; does not represent formal certification or legal compliance."
+      },
+      "ebios": {
+        "study_id": "EBIOS-ATLASPATH-2026",
+        "business_values_count": 1,
+        "retained_risk_sources": 2,
+        "ecosystem_stakeholders": 1,
+        "highest_threat_stakeholder": "WSI Scanner Maintenance Vendor",
+        "highest_stakeholder_threat_level": 4.0,
+        "strategic_scenarios": 1,
+        "operational_scenarios": 1,
+        "high_risk_initial_count": 1,
+        "high_risk_residual_count": 0,
+        "treatments_defined": 1
+      },
+      "fair": {
+        "scenario_name": "Unauthorized remote access & disclosure of sensitive patient pathology slides (Law 09-08)",
+        "currency": "MAD",
+        "iterations": 10000,
+        "seed": 4102,
+        "expected_lef": 2.0762,
+        "expected_sle": 901144.06,
+        "expected_ale": 1871879.55,
+        "p50_ale": 1566510.18,
+        "p90_ale": 3628695.48,
+        "p95_ale": 4328905.34,
+        "p99_ale": 5946767.42,
+        "ci90_low": 462630.48,
+        "ci90_high": 4328905.34,
+        "residual_expected_ale": 561563.86,
+        "residual_p95_ale": 1298671.6,
+        "risk_reduction_amount": 1310315.68,
+        "risk_reduction_pct": 70.0,
+        "annual_control_cost": 280000.0,
+        "net_risk_benefit": 1030315.68,
+        "expected_ale_alternate_currency": 172523.46,
+        "alternate_currency": "EUR",
+        "fx_metadata": {
+          "eur_to_mad": 10.85,
+          "date": "2026-11-26",
+          "source": "Reference demonstration rate (update from Bank Al-Maghrib / ECB for live budgeting)"
+        },
+        "sensitivity_spearman": {
+          "threat_event_frequency": 0.4584,
+          "vulnerability": 0.2828,
+          "primary_loss_magnitude": 0.2583,
+          "secondary_loss_magnitude": 0.7319
+        },
+        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+      }
+    },
+    "fondation-alqarawiyyin": {
+      "soa": {
+        "org_id": "fondation-alqarawiyyin",
+        "total_controls_tracked": 93,
+        "applicable_controls": 92,
+        "non_applicable_controls": 1,
+        "assessed_controls": 15,
+        "status_counts": {
+          "IMPLEMENTED": 7,
+          "PARTIAL": 5,
+          "NOT_IMPLEMENTED": 3,
+          "NOT_ASSESSED": 77,
+          "INSUFFICIENT_EVIDENCE": 0,
+          "ACCEPTED_EXCEPTION": 0
+        },
+        "implementation_index_pct": 10.3,
+        "disclaimer": "Self-assessment index based on recorded evidence; does not represent formal certification or legal compliance."
+      },
+      "ebios": {
+        "study_id": "EBIOS-HERITAGE-2026",
+        "business_values_count": 1,
+        "retained_risk_sources": 1,
+        "ecosystem_stakeholders": 1,
+        "highest_threat_stakeholder": "External Digitization Contractor",
+        "highest_stakeholder_threat_level": 2.25,
+        "strategic_scenarios": 1,
+        "operational_scenarios": 1,
+        "high_risk_initial_count": 0,
+        "high_risk_residual_count": 0,
+        "treatments_defined": 1
+      },
+      "fair": {
+        "scenario_name": "Ransomware & integrity corruption of digitized historical manuscript master vault",
+        "currency": "EUR",
+        "iterations": 10000,
+        "seed": 4103,
+        "expected_lef": 0.9194,
+        "expected_sle": 135549.23,
+        "expected_ale": 124577.14,
+        "p50_ale": 106609.52,
+        "p90_ale": 228841.27,
+        "p95_ale": 277760.02,
+        "p99_ale": 395286.85,
+        "ci90_low": 33743.17,
+        "ci90_high": 277760.02,
+        "residual_expected_ale": 37373.14,
+        "residual_p95_ale": 83328.0,
+        "risk_reduction_amount": 87204.0,
+        "risk_reduction_pct": 70.0,
+        "annual_control_cost": 32000.0,
+        "net_risk_benefit": 55204.0,
+        "expected_ale_alternate_currency": 1351661.93,
+        "alternate_currency": "MAD",
+        "fx_metadata": {
+          "eur_to_mad": 10.85,
+          "date": "2026-11-26",
+          "source": "Reference demonstration rate (update from Bank Al-Maghrib / ECB for live budgeting)"
+        },
+        "sensitivity_spearman": {
+          "threat_event_frequency": 0.5998,
+          "vulnerability": 0.3022,
+          "primary_loss_magnitude": 0.5251,
+          "secondary_loss_magnitude": 0.3629
+        },
+        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+      }
+    },
+    "observatoire-meridien": {
+      "soa": {
+        "org_id": "observatoire-meridien",
+        "total_controls_tracked": 93,
+        "applicable_controls": 92,
+        "non_applicable_controls": 1,
+        "assessed_controls": 14,
+        "status_counts": {
+          "IMPLEMENTED": 7,
+          "PARTIAL": 4,
+          "NOT_IMPLEMENTED": 3,
+          "NOT_ASSESSED": 78,
+          "INSUFFICIENT_EVIDENCE": 0,
+          "ACCEPTED_EXCEPTION": 0
+        },
+        "implementation_index_pct": 9.8,
+        "disclaimer": "Self-assessment index based on recorded evidence; does not represent formal certification or legal compliance."
+      },
+      "ebios": {
+        "study_id": "EBIOS-MERIDIEN-2026",
+        "business_values_count": 1,
+        "retained_risk_sources": 1,
+        "ecosystem_stakeholders": 1,
+        "highest_threat_stakeholder": "Visiting University Consortium",
+        "highest_stakeholder_threat_level": 1.5,
+        "strategic_scenarios": 1,
+        "operational_scenarios": 1,
+        "high_risk_initial_count": 0,
+        "high_risk_residual_count": 0,
+        "treatments_defined": 1
+      },
+      "fair": {
+        "scenario_name": "Compromise of federated researcher account causing telemetry tampering & telescope downtime",
+        "currency": "EUR",
+        "iterations": 10000,
+        "seed": 4104,
+        "expected_lef": 1.1972,
+        "expected_sle": 113132.81,
+        "expected_ale": 135406.21,
+        "p50_ale": 116129.42,
+        "p90_ale": 246374.32,
+        "p95_ale": 299679.49,
+        "p99_ale": 402660.79,
+        "ci90_low": 38940.74,
+        "ci90_high": 299679.49,
+        "residual_expected_ale": 54162.49,
+        "residual_p95_ale": 119871.8,
+        "risk_reduction_amount": 81243.73,
+        "risk_reduction_pct": 60.0,
+        "annual_control_cost": 40000.0,
+        "net_risk_benefit": 41243.73,
+        "expected_ale_alternate_currency": 1469157.43,
+        "alternate_currency": "MAD",
+        "fx_metadata": {
+          "eur_to_mad": 10.85,
+          "date": "2026-11-26",
+          "source": "Reference demonstration rate (update from Bank Al-Maghrib / ECB for live budgeting)"
+        },
+        "sensitivity_spearman": {
+          "threat_event_frequency": 0.5591,
+          "vulnerability": 0.3872,
+          "primary_loss_magnitude": 0.5595,
+          "secondary_loss_magnitude": 0.3087
+        },
+        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+      }
+    }
+  }
+}
