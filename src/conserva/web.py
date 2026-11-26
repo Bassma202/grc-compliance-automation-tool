@@ -1,13 +1,16 @@
 """CONSERVA FastAPI REST API & Institutional Governance Web Interface.
 
-Enforces role-based authorization & multi-tenant isolation across API endpoints:
-- X-Conserva-Role: ADMIN | AUDITOR | RISK_OWNER | VIEWER (default VIEWER on read; write requires AUDITOR/RISK_OWNER/ADMIN)
-- X-Conserva-Org: Scoped tenant header; non-ADMIN roles cannot read/write another organization's records.
+Security architecture (CONSERVA-01, CONSERVA-02, CONSERVA-05):
+- Requires cryptographically verified Bearer session tokens (`Authorization: Bearer <token>`).
+- Resolves role and allowed tenant memberships strictly server-side; untrusted client headers are ignored.
+- Enforces centralized default-deny authentication, RBAC, and tenant isolation on EVERY org API endpoint,
+  including Markdown report exports and persistent UUIDv4 FAIR run lookups.
 """
 
 from __future__ import annotations
 
 import os
+import uuid
 from pathlib import Path
 from typing import Any
 
@@ -15,10 +18,11 @@ from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.responses import HTMLResponse, PlainTextResponse
 from pydantic import BaseModel
 
+from conserva.auth import AuthenticatedPrincipal, AuthError, ConservaAuthService
 from conserva.case_studies import seed_four_case_studies
 from conserva.controls import load_builtin_controls
 from conserva.fair import run_fair_simulation
-from conserva.models import ControlAssessment, ControlStatus, EvidenceItem, FAIRScenarioInput, Role
+from conserva.models import ControlAssessment, ControlStatus, EvidenceItem, FAIRScenarioInput
 from conserva.storage import ConservaStore
 
 
@@ -30,30 +34,33 @@ class AssessmentPatch(BaseModel):
     finding_notes: str = ""
 
 
-def _require_access(
-    org_id: str,
-    write: bool = False,
-    x_conserva_role: str = Header(default="VIEWER"),
-    x_conserva_org: str | None = Header(default=None),
-) -> Role:
-    try:
-        role = Role(x_conserva_role.upper())
-    except ValueError as exc:
-        raise HTTPException(status_code=403, detail=f"Invalid role: {x_conserva_role}") from exc
-    if role != Role.ADMIN and x_conserva_org and x_conserva_org != org_id:
-        raise HTTPException(status_code=403, detail="Cross-tenant access denied.")
-    if write and role not in {Role.ADMIN, Role.AUDITOR, Role.RISK_OWNER}:
-        raise HTTPException(status_code=403, detail=f"Role {role.value} is read-only.")
-    return role
-
-
-def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> FastAPI:
+def create_app(
+    db_path: str | Path | None = None,
+    seed_demo: bool = True,
+    auth_service: ConservaAuthService | None = None,
+) -> FastAPI:
     store = ConservaStore(db_path or os.getenv("CONSERVA_DB_PATH", "data/conserva.db"))
     if seed_demo and not store.list_orgs():
         seed_four_case_studies(store)
 
+    auth = auth_service or ConservaAuthService()
     controls_index = {c.control_id: c for c in load_builtin_controls()}
-    app = FastAPI(title="CONSERVA — Cyber Governance & Quantitative Risk Engineering", version="2.0.0")
+    app = FastAPI(title="CONSERVA — Cyber Governance & Quantitative Risk Engineering", version="2.1.0")
+    app.state.auth = auth
+    app.state.store = store
+
+    def require_principal(authorization: str | None = Header(default=None)) -> AuthenticatedPrincipal:
+        try:
+            return auth.verify_bearer_header(authorization)
+        except AuthError as exc:
+            raise HTTPException(status_code=exc.status_code, detail=exc.detail) from exc
+
+    def authorize_org(principal: AuthenticatedPrincipal, org_id: str, write: bool = False) -> AuthenticatedPrincipal:
+        if not principal.can_access_org(org_id):
+            raise HTTPException(status_code=403, detail="Cross-tenant access denied.")
+        if write and not principal.can_write():
+            raise HTTPException(status_code=403, detail=f"Role {principal.role.value} is read-only.")
+        return principal
 
     @app.get("/api/health")
     def health() -> dict[str, Any]:
@@ -70,16 +77,15 @@ def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> Fas
         }
 
     @app.get("/api/orgs")
-    def list_orgs() -> list[dict[str, Any]]:
-        return store.list_orgs()
+    def list_orgs(principal: AuthenticatedPrincipal = Depends(require_principal)) -> list[dict[str, Any]]:
+        return [o for o in store.list_orgs() if principal.can_access_org(o["org_id"])]
 
     @app.get("/api/orgs/{org_id}/soa")
     def get_soa(
         org_id: str,
-        x_conserva_role: str = Header(default="VIEWER"),
-        x_conserva_org: str | None = Header(default=None),
+        principal: AuthenticatedPrincipal = Depends(require_principal),
     ) -> dict[str, Any]:
-        _require_access(org_id, write=False, x_conserva_role=x_conserva_role, x_conserva_org=x_conserva_org)
+        authorize_org(principal, org_id, write=False)
         org = store.get_org(org_id)
         if not org:
             raise HTTPException(status_code=404, detail="Organization not found.")
@@ -94,10 +100,9 @@ def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> Fas
         org_id: str,
         control_id: str,
         body: AssessmentPatch,
-        x_conserva_role: str = Header(default="VIEWER"),
-        x_conserva_org: str | None = Header(default=None),
+        principal: AuthenticatedPrincipal = Depends(require_principal),
     ) -> dict[str, Any]:
-        role = _require_access(org_id, write=True, x_conserva_role=x_conserva_role, x_conserva_org=x_conserva_org)
+        authorize_org(principal, org_id, write=True)
         if control_id not in controls_index:
             raise HTTPException(status_code=404, detail="Unknown control ID.")
         if not body.applicable and not body.applicability_justification.strip():
@@ -113,30 +118,28 @@ def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> Fas
             finding_notes=body.finding_notes,
         )
         store.upsert_assessment(a)
-        store.log_audit(role.value, org_id, "UPDATE_ASSESSMENT", f"{control_id} -> {body.status.value}")
+        store.log_audit(f"{principal.subject}:{principal.role.value}", org_id, "UPDATE_ASSESSMENT", f"{control_id} -> {body.status.value}")
         return a.model_dump()
 
     @app.post("/api/orgs/{org_id}/evidence")
     def add_evidence(
         org_id: str,
         item: EvidenceItem,
-        x_conserva_role: str = Header(default="VIEWER"),
-        x_conserva_org: str | None = Header(default=None),
+        principal: AuthenticatedPrincipal = Depends(require_principal),
     ) -> dict[str, Any]:
-        role = _require_access(org_id, write=True, x_conserva_role=x_conserva_role, x_conserva_org=x_conserva_org)
+        authorize_org(principal, org_id, write=True)
         if item.org_id != org_id:
             raise HTTPException(status_code=400, detail="Evidence org_id must match path org_id.")
         store.save_evidence(item)
-        store.log_audit(role.value, org_id, "ADD_EVIDENCE", f"{item.evidence_id} ({item.control_id})")
+        store.log_audit(f"{principal.subject}:{principal.role.value}", org_id, "ADD_EVIDENCE", f"{item.evidence_id} ({item.control_id})")
         return item.model_dump()
 
     @app.get("/api/orgs/{org_id}/ebios")
     def get_ebios(
         org_id: str,
-        x_conserva_role: str = Header(default="VIEWER"),
-        x_conserva_org: str | None = Header(default=None),
+        principal: AuthenticatedPrincipal = Depends(require_principal),
     ) -> dict[str, Any]:
-        _require_access(org_id, write=False, x_conserva_role=x_conserva_role, x_conserva_org=x_conserva_org)
+        authorize_org(principal, org_id, write=False)
         study = store.get_ebios(org_id)
         if not study:
             raise HTTPException(status_code=404, detail="No EBIOS RM study found.")
@@ -146,18 +149,38 @@ def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> Fas
     def run_fair_endpoint(
         org_id: str,
         cfg: FAIRScenarioInput,
-        x_conserva_role: str = Header(default="VIEWER"),
-        x_conserva_org: str | None = Header(default=None),
+        principal: AuthenticatedPrincipal = Depends(require_principal),
     ) -> dict[str, Any]:
-        role = _require_access(org_id, write=True, x_conserva_role=x_conserva_role, x_conserva_org=x_conserva_org)
+        authorize_org(principal, org_id, write=True)
         res = run_fair_simulation(cfg)
-        run_id = f"FAIR-{org_id.upper()}-{abs(hash(cfg.scenario_name)) % 10000:04d}"
+        run_id = f"FAIR-{uuid.uuid4()}"
         store.save_fair_run(run_id, org_id, res)
-        store.log_audit(role.value, org_id, "RUN_FAIR", f"{cfg.scenario_name} (ALE={res.expected_ale} {res.currency})")
-        return res.model_dump()
+        store.log_audit(
+            f"{principal.subject}:{principal.role.value}",
+            org_id,
+            "RUN_FAIR",
+            f"{run_id} {cfg.scenario_name} (ALE={res.expected_ale} {res.currency})",
+        )
+        return res.model_copy(update={"run_id": run_id}).model_dump()
+
+    @app.get("/api/orgs/{org_id}/fair/{run_id}")
+    def get_fair_run_endpoint(
+        org_id: str,
+        run_id: str,
+        principal: AuthenticatedPrincipal = Depends(require_principal),
+    ) -> dict[str, Any]:
+        authorize_org(principal, org_id, write=False)
+        record = store.get_fair_run(org_id, run_id)
+        if not record:
+            raise HTTPException(status_code=404, detail="FAIR simulation run not found for this organization.")
+        return record
 
     @app.get("/api/orgs/{org_id}/report.md", response_class=PlainTextResponse)
-    def export_markdown_report(org_id: str) -> str:
+    def export_markdown_report(
+        org_id: str,
+        principal: AuthenticatedPrincipal = Depends(require_principal),
+    ) -> str:
+        authorize_org(principal, org_id, write=False)
         org = store.get_org(org_id)
         if not org:
             raise HTTPException(status_code=404, detail="Organization not found.")
@@ -180,9 +203,10 @@ def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> Fas
             "## 2. ANSSI EBIOS Risk Manager (5-Workshop Summary)",
             f"- **Summary:** {ebios.summary() if ebios else 'None'}",
             "",
-            "## 3. Monte Carlo Open FAIR Quantitative Risk Summary",
+            "## 3. Compound Frequency-Severity Monte Carlo Risk Summary",
             f"- **Scenario:** {fair.get('scenario_name', 'N/A')}",
-            f"- **Expected ALE:** {fair.get('expected_ale', 0):,.2f} {fair.get('currency', 'EUR')} (p50: {fair.get('p50_ale', 0):,.2f}, p95: {fair.get('p95_ale', 0):,.2f}, p99: {fair.get('p99_ale', 0):,.2f})",
+            f"- **Expected Annual Loss (Compound AAL Mean):** {fair.get('expected_ale', 0):,.2f} {fair.get('currency', 'EUR')} (p50: {fair.get('p50_ale', 0):,.2f}, p95: {fair.get('p95_ale', 0):,.2f}, p99: {fair.get('p99_ale', 0):,.2f})",
+            f"- **Zero-Event Year Probability:** {fair.get('probability_of_zero_loss_pct', 0)}%",
             f"- **Residual Expected ALE (Post-Treatment):** {fair.get('residual_expected_ale', 0):,.2f} {fair.get('currency', 'EUR')} ({fair.get('risk_reduction_pct', 0)}% reduction)",
             f"- **Net Annual Risk Benefit:** {fair.get('net_risk_benefit', 0):,.2f} {fair.get('currency', 'EUR')}",
         ]
@@ -251,14 +275,14 @@ def create_app(db_path: str | Path | None = None, seed_demo: bool = True) -> Fas
 <body>
   <header>
     <h1>CONSERVA — Cyber Governance &amp; Quantitative Risk Engineering</h1>
-    <p>{selected['name']} · {selected['sector']} · {selected['jurisdiction']}</p>
+    <p>{selected['name']} · {selected['sector']} · {selected['jurisdiction']} · Authenticated API Enabled</p>
   </header>
   <nav>{tabs}</nav>
   <main>
     <div class="notice">{selected['fictional_disclaimer']} Applicable frameworks: {', '.join(selected['applicable_laws'])}.</div>
     <div class="grid">
       <div class="card"><div class="label">Annex A Controls Tracked</div><div class="val">{soa['total_controls_tracked']}</div><div class="sub">Applicable: {soa['applicable_controls']} · N/A: {soa['non_applicable_controls']}</div></div>
-      <div class="card"><div class="label">Expected ALE (Monte Carlo)</div><div class="val">{fair.get('expected_ale', 0):,.0f} {fair.get('currency', 'EUR')}</div><div class="sub">p95: {fair.get('p95_ale', 0):,.0f} · {fair.get('iterations', 0):,} iterations</div></div>
+      <div class="card"><div class="label">Expected Annual Loss (Compound)</div><div class="val">{fair.get('expected_ale', 0):,.0f} {fair.get('currency', 'EUR')}</div><div class="sub">p95: {fair.get('p95_ale', 0):,.0f} · P(zero loss): {fair.get('probability_of_zero_loss_pct', 0)}%</div></div>
       <div class="card"><div class="label">Residual ALE (Post-Treatment)</div><div class="val">{fair.get('residual_expected_ale', 0):,.0f} {fair.get('currency', 'EUR')}</div><div class="sub">Risk reduction: {fair.get('risk_reduction_pct', 0)}%</div></div>
       <div class="card"><div class="label">Net Risk Benefit</div><div class="val">{fair.get('net_risk_benefit', 0):,.0f} {fair.get('currency', 'EUR')}</div><div class="sub">Control cost: {fair.get('annual_control_cost', 0):,.0f}</div></div>
     </div>

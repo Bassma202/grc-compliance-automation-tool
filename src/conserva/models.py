@@ -95,6 +95,7 @@ class FAIRScenarioInput(BaseModel):
 
 
 class FAIRResult(BaseModel):
+    run_id: str | None = None
     scenario_name: str
     currency: str
     iterations: int
@@ -102,12 +103,17 @@ class FAIRResult(BaseModel):
     expected_lef: float
     expected_sle: float
     expected_ale: float
+    aggregate_loss_std: float = 0.0
+    probability_of_zero_loss_pct: float = 0.0
+    parameter_eal_p50: float = 0.0
+    parameter_eal_p95: float = 0.0
     p50_ale: float
     p90_ale: float
     p95_ale: float
     p99_ale: float
     ci90_low: float
     ci90_high: float
+    exceedance_curve: dict[str, float] = Field(default_factory=dict)
     residual_expected_ale: float
     residual_p95_ale: float
     risk_reduction_amount: float

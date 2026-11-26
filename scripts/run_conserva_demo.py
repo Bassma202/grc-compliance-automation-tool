@@ -10,9 +10,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from conserva.case_studies import seed_four_case_studies
-from conserva.models import utc_now_iso
-from conserva.storage import ConservaStore
+from conserva.case_studies import seed_four_case_studies  # noqa: E402
+from conserva.models import utc_now_iso  # noqa: E402
+from conserva.storage import ConservaStore  # noqa: E402
 
 
 def main() -> None:

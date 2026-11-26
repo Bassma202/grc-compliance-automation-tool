@@ -234,11 +234,22 @@ class ConservaStore:
         return EBIOSStudy.model_validate_json(row["payload_json"]) if row else None
 
     def save_fair_run(self, run_id: str, org_id: str, res: FAIRResult) -> None:
+        res_with_id = res.model_copy(update={"run_id": run_id})
         with self._connect() as conn:
             conn.execute(
-                "INSERT OR REPLACE INTO fair_runs (run_id, org_id, scenario_name, payload_json, created_at) VALUES (?, ?, ?, ?, ?)",
-                (run_id, org_id, res.scenario_name, res.model_dump_json(), utc_now_iso()),
+                "INSERT INTO fair_runs (run_id, org_id, scenario_name, payload_json, created_at) VALUES (?, ?, ?, ?, ?)",
+                (run_id, org_id, res_with_id.scenario_name, res_with_id.model_dump_json(), utc_now_iso()),
             )
+
+    def get_fair_run(self, org_id: str, run_id: str) -> dict[str, Any] | None:
+        with self._connect() as conn:
+            row = conn.execute(
+                "SELECT run_id, org_id, payload_json, created_at FROM fair_runs WHERE org_id = ? AND run_id = ?",
+                (org_id, run_id),
+            ).fetchone()
+        if not row:
+            return None
+        return {"run_id": row["run_id"], "org_id": row["org_id"], "created_at": row["created_at"], **json.loads(row["payload_json"])}
 
     def list_fair_runs(self, org_id: str) -> list[dict[str, Any]]:
         with self._connect() as conn:

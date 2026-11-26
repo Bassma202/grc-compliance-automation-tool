@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-26T01:40:41.783347+00:00",
+  "generated_at": "2026-11-26T03:46:12.034076+00:00",
   "evidence_classification": "Simulated business data (explicitly fictional case studies)",
   "case_studies": {
     "maison-valmont": {
@@ -34,26 +34,37 @@
         "treatments_defined": 1
       },
       "fair": {
+        "run_id": null,
         "scenario_name": "Pre-show unreleased couture archive & VIP CRM exfiltration via compromised atelier vendor",
         "currency": "EUR",
         "iterations": 10000,
         "seed": 4101,
         "expected_lef": 1.1158,
         "expected_sle": 272327.14,
-        "expected_ale": 303468.79,
-        "p50_ale": 221224.13,
-        "p90_ale": 650536.74,
-        "p95_ale": 805852.76,
-        "p99_ale": 1166597.27,
-        "ci90_low": 59339.78,
-        "ci90_high": 805852.76,
-        "residual_expected_ale": 106214.08,
-        "residual_p95_ale": 282048.47,
-        "risk_reduction_amount": 197254.72,
-        "risk_reduction_pct": 65.0,
+        "expected_ale": 310176.41,
+        "aggregate_loss_std": 375018.12,
+        "probability_of_zero_loss_pct": 35.93,
+        "parameter_eal_p50": 221224.13,
+        "parameter_eal_p95": 805852.76,
+        "p50_ale": 168768.97,
+        "p90_ale": 823885.03,
+        "p95_ale": 1070127.15,
+        "p99_ale": 1563787.78,
+        "ci90_low": 0.0,
+        "ci90_high": 1070127.15,
+        "exceedance_curve": {
+          ">=155088": 51.7,
+          ">=310176": 39.29,
+          ">=620353": 17.66,
+          ">=930529": 7.45
+        },
+        "residual_expected_ale": 106438.37,
+        "residual_p95_ale": 570004.88,
+        "risk_reduction_amount": 203738.04,
+        "risk_reduction_pct": 65.68,
         "annual_control_cost": 65000.0,
-        "net_risk_benefit": 132254.72,
-        "expected_ale_alternate_currency": 3292636.42,
+        "net_risk_benefit": 138738.04,
+        "expected_ale_alternate_currency": 3365414.09,
         "alternate_currency": "MAD",
         "fx_metadata": {
           "eur_to_mad": 10.85,
@@ -64,9 +75,9 @@
           "threat_event_frequency": 0.4389,
           "vulnerability": 0.2798,
           "primary_loss_magnitude": 0.322,
-          "secondary_loss_magnitude": 0.6899
+          "secondary_loss_magnitude": 0.7573
         },
-        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+        "methodology_notes": "Compound frequency-severity Monte Carlo model aligned with Open FAIR concepts: annual event counts N ~ Poisson(TEF * Vulnerability), each event severity sampled independently from Beta-PERT Primary + Bernoulli(SLEF)*Beta-PERT Secondary Loss. Separates parameter EAL uncertainty from true aggregate annual loss exceedance distribution; demonstration inputs are fictional."
       }
     },
     "atlaspath-lab": {
@@ -101,26 +112,37 @@
         "treatments_defined": 1
       },
       "fair": {
+        "run_id": null,
         "scenario_name": "Unauthorized remote access & disclosure of sensitive patient pathology slides (Law 09-08)",
         "currency": "MAD",
         "iterations": 10000,
         "seed": 4102,
         "expected_lef": 2.0762,
         "expected_sle": 901144.06,
-        "expected_ale": 1871879.55,
-        "p50_ale": 1566510.18,
-        "p90_ale": 3628695.48,
-        "p95_ale": 4328905.34,
-        "p99_ale": 5946767.42,
-        "ci90_low": 462630.48,
-        "ci90_high": 4328905.34,
-        "residual_expected_ale": 561563.86,
-        "residual_p95_ale": 1298671.6,
-        "risk_reduction_amount": 1310315.68,
-        "risk_reduction_pct": 70.0,
+        "expected_ale": 1856514.12,
+        "aggregate_loss_std": 1601918.58,
+        "probability_of_zero_loss_pct": 16.04,
+        "parameter_eal_p50": 1566510.18,
+        "parameter_eal_p95": 4328905.34,
+        "p50_ale": 1551594.86,
+        "p90_ale": 4018827.45,
+        "p95_ale": 4928976.11,
+        "p99_ale": 6663980.66,
+        "ci90_low": 0.0,
+        "ci90_high": 4928976.11,
+        "exceedance_curve": {
+          ">=928257": 67.3,
+          ">=1856514": 42.33,
+          ">=3713028": 12.65,
+          ">=5569542": 2.9
+        },
+        "residual_expected_ale": 559565.71,
+        "residual_p95_ale": 2241317.93,
+        "risk_reduction_amount": 1296948.4,
+        "risk_reduction_pct": 69.86,
         "annual_control_cost": 280000.0,
-        "net_risk_benefit": 1030315.68,
-        "expected_ale_alternate_currency": 172523.46,
+        "net_risk_benefit": 1016948.4,
+        "expected_ale_alternate_currency": 171107.29,
         "alternate_currency": "EUR",
         "fx_metadata": {
           "eur_to_mad": 10.85,
@@ -131,9 +153,9 @@
           "threat_event_frequency": 0.4584,
           "vulnerability": 0.2828,
           "primary_loss_magnitude": 0.2583,
-          "secondary_loss_magnitude": 0.7319
+          "secondary_loss_magnitude": 0.7684
         },
-        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+        "methodology_notes": "Compound frequency-severity Monte Carlo model aligned with Open FAIR concepts: annual event counts N ~ Poisson(TEF * Vulnerability), each event severity sampled independently from Beta-PERT Primary + Bernoulli(SLEF)*Beta-PERT Secondary Loss. Separates parameter EAL uncertainty from true aggregate annual loss exceedance distribution; demonstration inputs are fictional."
       }
     },
     "fondation-alqarawiyyin": {
@@ -168,26 +190,37 @@
         "treatments_defined": 1
       },
       "fair": {
+        "run_id": null,
         "scenario_name": "Ransomware & integrity corruption of digitized historical manuscript master vault",
         "currency": "EUR",
         "iterations": 10000,
         "seed": 4103,
         "expected_lef": 0.9194,
         "expected_sle": 135549.23,
-        "expected_ale": 124577.14,
-        "p50_ale": 106609.52,
-        "p90_ale": 228841.27,
-        "p95_ale": 277760.02,
-        "p99_ale": 395286.85,
-        "ci90_low": 33743.17,
-        "ci90_high": 277760.02,
-        "residual_expected_ale": 37373.14,
-        "residual_p95_ale": 83328.0,
-        "risk_reduction_amount": 87204.0,
-        "risk_reduction_pct": 70.0,
+        "expected_ale": 126591.09,
+        "aggregate_loss_std": 151152.68,
+        "probability_of_zero_loss_pct": 42.03,
+        "parameter_eal_p50": 106609.52,
+        "parameter_eal_p95": 277760.02,
+        "p50_ale": 91287.23,
+        "p90_ale": 330818.13,
+        "p95_ale": 424032.85,
+        "p99_ale": 623122.36,
+        "ci90_low": 0.0,
+        "ci90_high": 424032.85,
+        "exceedance_curve": {
+          ">=63296": 55.28,
+          ">=126591": 41.58,
+          ">=253182": 17.97,
+          ">=379773": 6.85
+        },
+        "residual_expected_ale": 37231.15,
+        "residual_p95_ale": 209807.27,
+        "risk_reduction_amount": 89359.95,
+        "risk_reduction_pct": 70.59,
         "annual_control_cost": 32000.0,
-        "net_risk_benefit": 55204.0,
-        "expected_ale_alternate_currency": 1351661.93,
+        "net_risk_benefit": 57359.95,
+        "expected_ale_alternate_currency": 1373513.37,
         "alternate_currency": "MAD",
         "fx_metadata": {
           "eur_to_mad": 10.85,
@@ -198,9 +231,9 @@
           "threat_event_frequency": 0.5998,
           "vulnerability": 0.3022,
           "primary_loss_magnitude": 0.5251,
-          "secondary_loss_magnitude": 0.3629
+          "secondary_loss_magnitude": 0.4446
         },
-        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+        "methodology_notes": "Compound frequency-severity Monte Carlo model aligned with Open FAIR concepts: annual event counts N ~ Poisson(TEF * Vulnerability), each event severity sampled independently from Beta-PERT Primary + Bernoulli(SLEF)*Beta-PERT Secondary Loss. Separates parameter EAL uncertainty from true aggregate annual loss exceedance distribution; demonstration inputs are fictional."
       }
     },
     "observatoire-meridien": {
@@ -235,26 +268,37 @@
         "treatments_defined": 1
       },
       "fair": {
+        "run_id": null,
         "scenario_name": "Compromise of federated researcher account causing telemetry tampering & telescope downtime",
         "currency": "EUR",
         "iterations": 10000,
         "seed": 4104,
         "expected_lef": 1.1972,
         "expected_sle": 113132.81,
-        "expected_ale": 135406.21,
-        "p50_ale": 116129.42,
-        "p90_ale": 246374.32,
-        "p95_ale": 299679.49,
-        "p99_ale": 402660.79,
-        "ci90_low": 38940.74,
-        "ci90_high": 299679.49,
-        "residual_expected_ale": 54162.49,
-        "residual_p95_ale": 119871.8,
-        "risk_reduction_amount": 81243.73,
-        "risk_reduction_pct": 60.0,
+        "expected_ale": 133608.62,
+        "aggregate_loss_std": 143374.95,
+        "probability_of_zero_loss_pct": 33.75,
+        "parameter_eal_p50": 116129.42,
+        "parameter_eal_p95": 299679.49,
+        "p50_ale": 103581.73,
+        "p90_ale": 329551.64,
+        "p95_ale": 418592.93,
+        "p99_ale": 587518.39,
+        "ci90_low": 0.0,
+        "ci90_high": 418592.93,
+        "exceedance_curve": {
+          ">=66804": 60.41,
+          ">=133609": 41.13,
+          ">=267217": 16.45,
+          ">=400826": 5.68
+        },
+        "residual_expected_ale": 54787.32,
+        "residual_p95_ale": 232805.58,
+        "risk_reduction_amount": 78821.3,
+        "risk_reduction_pct": 58.99,
         "annual_control_cost": 40000.0,
-        "net_risk_benefit": 41243.73,
-        "expected_ale_alternate_currency": 1469157.43,
+        "net_risk_benefit": 38821.3,
+        "expected_ale_alternate_currency": 1449653.52,
         "alternate_currency": "MAD",
         "fx_metadata": {
           "eur_to_mad": 10.85,
@@ -265,9 +309,9 @@
           "threat_event_frequency": 0.5591,
           "vulnerability": 0.3872,
           "primary_loss_magnitude": 0.5595,
-          "secondary_loss_magnitude": 0.3087
+          "secondary_loss_magnitude": 0.4005
         },
-        "methodology_notes": "Beta-PERT Monte Carlo approximation inspired by Open FAIR taxonomy (LEF = TEF * Vulnerability; ALE = LEF * (Primary + Secondary Loss)). Assumes independent factor sampling; demonstration inputs are explicitly fictional."
+        "methodology_notes": "Compound frequency-severity Monte Carlo model aligned with Open FAIR concepts: annual event counts N ~ Poisson(TEF * Vulnerability), each event severity sampled independently from Beta-PERT Primary + Bernoulli(SLEF)*Beta-PERT Secondary Loss. Separates parameter EAL uncertainty from true aggregate annual loss exceedance distribution; demonstration inputs are fictional."
       }
     }
   }
